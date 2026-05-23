@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather API Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: #fff;
+      text-align: center;
+      padding: 50px;
+    }
+    .weather-card {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      display: inline-block;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    .weather-card h2 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .weather-card p {
+      margin: 8px 0;
+      font-size: 20px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-card" id="weather">
+    <h2>Loading weather...</h2>
+  </div>
+
+  <script>
+    const apiKey = "2e6cb2e86f396907aefcaf204500a531";
+    const city = "Mumbai";
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok " + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("Full JSON Response:", data);
+
+        const temp = data.main.temp;
+        const description = data.weather[0].description;
+        const humidity = data.main.humidity;
+
+        document.getElementById("weather").innerHTML = `
+          <h2>${city}</h2>
+          <p>🌡 Temperature: <strong>${temp}°C</strong></p>
+          <p>☁ Condition: <strong>${description}</strong></p>
+          <p>💧 Humidity: <strong>${humidity}%</strong></p>
+        `;
+      })
+      .catch(error => {
+        document.getElementById("weather").innerHTML = `<p>Error: ${error.message}</p>`;
+        console.error("Error fetching data:", error);
+      });
+  </script>
+</body>
+</html>
